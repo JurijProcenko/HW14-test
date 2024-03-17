@@ -32,8 +32,6 @@ security = HTTPBearer()
     "/signup",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=1, seconds=10))],
 )
 async def signup(
     body: UserModel,
@@ -74,8 +72,6 @@ async def signup(
 @router.post(
     "/login",
     response_model=TokenModel,
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=1, seconds=5))],
 )
 async def login(
     body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
@@ -118,8 +114,6 @@ async def login(
 @router.get(
     "/refresh_token",
     response_model=TokenModel,
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=1, seconds=600))],
 )
 async def refresh_token(
     credentials: HTTPAuthorizationCredentials = Security(security),
@@ -158,8 +152,6 @@ async def refresh_token(
 async def confirmed_email(
     token: str,
     db: Session = Depends(get_db),
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=2, seconds=60))],
 ):
     """
     Confirmation a new user's email.
@@ -189,8 +181,6 @@ async def confirmed_email(
 
 @router.post(
     "/request_email",
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=1, seconds=20))],
 )
 async def request_email(
     body: RequestEmail,
