@@ -112,6 +112,8 @@ async def update_contact(
         .filter(and_(Contact.id == contact_id, Contact.user_id == user.id))
         .first()
     )
+    if not target_contact:
+        return
     if name:
         target_contact.name = name
     if lastname:
@@ -150,7 +152,7 @@ async def delete_contact(contact_id, user: User, db: Session) -> Contact | None:
     if item:
         db.delete(item)
         db.commit()
-    return
+        return item
 
 
 async def search_data(
@@ -205,6 +207,8 @@ async def birthday_to_week(user: User, db: Session) -> List[ContactModel] | None
     :rtype: List[ContactModel]
     """
     users = db.query(Contact).filter(Contact.user_id == user.id).all()
+    if not users:
+        return
     week = date.today() + timedelta(days=6)
     happy_users = []
     for user in users:
